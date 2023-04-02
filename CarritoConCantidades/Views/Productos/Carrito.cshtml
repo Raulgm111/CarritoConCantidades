@@ -1,0 +1,62 @@
+﻿@model List<Producto>
+
+<h1>Carrito</h1>
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Nombre
+                </th>
+                <th>
+                    Imagen
+                </th>
+                <th>
+                    Precio
+                </th>
+                <th>
+                    Cantidad
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Nombre
+                    </td>
+                    <td>
+                        <img width="150" src="@item.Imagen" />
+                    </td>
+                    <td>
+                        @item.Precio€
+                    </td>
+                    <td>
+                         <label for="cantidad" class="sr-only">Cantidad</label>
+                            <select id="cantidad-@item.IdBebida" name="cantidad" class="mt-1 block border-gray-500 py-2 pl-3 pr-10 text-base focus:border-neutral-500 focus:outline-none focus:ring-neutral-500 sm:text-sm">
+                                <option id="cantidadValue" name="cantidadValue">@(Context.Session.GetObject<List<int>>("CARRITO") != null ? Context.Session.GetObject<List<int>>("CARRITO").Count(x => x == item.IdBebida) : 0)</option>
+                             </select>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-danger" asp-action="Carrito" asp-controller="Productos" asp-route-idproductoCarrito="@item.IdBebida">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+            }
+                 <tr>
+                    <td colspan="3"></td>
+                    <td>Total:</td>
+                    <td>@Model.Sum(p => p.Precio * (Context.Session.GetObject<List<int>>("CARRITO") != null ? Context.Session.GetObject<List<int>>("CARRITO").Count(x => x == p.IdBebida) : 0))€</td>
+                </tr>
+        </tbody>
+    </table>
+
+}
+else
+{
+    <p style="color:red">Carrito vacio</p>
+}
